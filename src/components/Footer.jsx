@@ -300,7 +300,7 @@ const Footer = () => {
           }
 
           .footer-logo-img {
-            height: 44px;
+            height: 60px;
           }
 
           .footer-bottom-bar {
