@@ -113,7 +113,7 @@ const AddNews = () => {
   const handleFileUpload = async (file) => {
     if (!file) return;
     setUploading(true);
-    
+
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -218,29 +218,29 @@ const AddNews = () => {
         <h2>{articleId ? 'Edit Article' : 'Post New Article'}</h2>
         <p>{articleId ? 'Update the details of your article below.' : 'Fill in the details below to publish news across People Media Point.'}</p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="news-form">
         <div className="form-section">
           <h3>Main Content</h3>
           <div className="form-group">
             <label>Title</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Enter news title in Telugu/English..."
-              value={formData.title} 
-              onChange={(e) => setFormData({...formData, title: e.target.value})} 
-              required 
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              required
             />
           </div>
 
           <div className="form-group">
             <label>News Content</label>
-            <textarea 
+            <textarea
               placeholder="Write the full story here..."
-              value={formData.content} 
-              onChange={(e) => setFormData({...formData, content: e.target.value})} 
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               rows="10"
-              required 
+              required
             />
           </div>
         </div>
@@ -250,9 +250,9 @@ const AddNews = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Target Category</label>
-              <select 
-                value={formData.category_id} 
-                onChange={(e) => setFormData({...formData, category_id: e.target.value})}
+              <select
+                value={formData.category_id}
+                onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                 required
               >
                 <option value="">Select Category</option>
@@ -265,9 +265,9 @@ const AddNews = () => {
             {districts.length > 0 && (
               <div className="form-group">
                 <label>District (Optional)</label>
-                <select 
-                  value={formData.district_id} 
-                  onChange={(e) => setFormData({...formData, district_id: e.target.value})}
+                <select
+                  value={formData.district_id}
+                  onChange={(e) => setFormData({ ...formData, district_id: e.target.value })}
                 >
                   <option value="">Select District</option>
                   {districts.map(d => (
@@ -280,19 +280,19 @@ const AddNews = () => {
 
           <div className="form-checkbox-group">
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
-                checked={formData.is_top_hero} 
-                onChange={(e) => setFormData({...formData, is_top_hero: e.target.checked})} 
+              <input
+                type="checkbox"
+                checked={formData.is_top_hero}
+                onChange={(e) => setFormData({ ...formData, is_top_hero: e.target.checked })}
               />
-              Show in Hero Main Banner (V6 Top Slider)
+              Show in Hero Main Banner
             </label>
 
             <label className="checkbox-label">
-              <input 
-                type="checkbox" 
-                checked={formData.is_hero_slider} 
-                onChange={(e) => setFormData({...formData, is_hero_slider: e.target.checked})} 
+              <input
+                type="checkbox"
+                checked={formData.is_hero_slider}
+                onChange={(e) => setFormData({ ...formData, is_hero_slider: e.target.checked })}
               />
               Include in Trending / Latest News
             </label>
@@ -301,10 +301,10 @@ const AddNews = () => {
 
         <div className="form-section">
           <h3>Media & Links</h3>
-          
+
           <div className="form-group">
             <label>Featured Image</label>
-            <div 
+            <div
               className={`drag-drop-zone ${dragActive ? 'active' : ''}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -314,10 +314,10 @@ const AddNews = () => {
               {formData.image_url ? (
                 <div className="preview-container">
                   <img src={formData.image_url} alt="Preview" className="image-preview" />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="remove-img-btn"
-                    onClick={() => setFormData({...formData, image_url: ''})}
+                    onClick={() => setFormData({ ...formData, image_url: '' })}
                   >
                     Remove Image
                   </button>
@@ -325,9 +325,9 @@ const AddNews = () => {
               ) : (
                 <div className="upload-prompt">
                   <p>Drag and drop an image here, or <span>browse</span></p>
-                  <input 
-                    type="file" 
-                    accept="image/*" 
+                  <input
+                    type="file"
+                    accept="image/*"
                     onChange={(e) => handleFileUpload(e.target.files[0])}
                     disabled={uploading}
                     className="file-input-hidden"
@@ -336,14 +336,14 @@ const AddNews = () => {
                 </div>
               )}
             </div>
-            
+
             <div style={{ marginTop: '0.8rem' }}>
               <label style={{ fontSize: '0.85rem', color: '#666' }}>Or paste image web URL directly:</label>
-              <input 
+              <input
                 type="url"
                 placeholder="https://images.unsplash.com/..."
                 value={formData.image_url}
-                onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                 style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '4px', marginTop: '4px' }}
               />
             </div>
@@ -351,21 +351,21 @@ const AddNews = () => {
 
           <div className="form-group">
             <label>YouTube Video Link (Optional)</label>
-            <input 
-              type="url" 
+            <input
+              type="url"
               placeholder="https://www.youtube.com/watch?v=..."
-              value={formData.video_url} 
-              onChange={(e) => setFormData({...formData, video_url: e.target.value})} 
+              value={formData.video_url}
+              onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
             />
           </div>
 
           <div className="form-group">
             <label>WhatsApp Channel Link (Optional)</label>
-            <input 
-              type="url" 
+            <input
+              type="url"
               placeholder="https://whatsapp.com/channel/..."
-              value={formData.whatsapp_link} 
-              onChange={(e) => setFormData({...formData, whatsapp_link: e.target.value})} 
+              value={formData.whatsapp_link}
+              onChange={(e) => setFormData({ ...formData, whatsapp_link: e.target.value })}
             />
           </div>
         </div>
