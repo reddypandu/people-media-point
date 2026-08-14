@@ -86,6 +86,9 @@ const Navbar = () => {
 
             <LanguageSelector />
           </div>
+          <button className="hamburger-rtv" onClick={toggleMenu} aria-label="Toggle Menu">
+            {isMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
       </div>
 
@@ -109,9 +112,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            <button className="hamburger-rtv" onClick={toggleMenu} aria-label="Toggle Menu">
-              {isMenuOpen ? '✕' : '☰'}
-            </button>
+
           </div>
         </div>
       </div>

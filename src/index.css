@@ -366,6 +366,10 @@ body {
     padding: 8px 0;
   }
 
+  .nav-header-container {
+    justify-content: center;
+  }
+
   .top-bar-content {
     flex-direction: column;
     gap: 8px;
@@ -394,13 +398,15 @@ body {
   }
 
   .brand-logo-img {
-    height: 60px;
+    height: 100px;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .brand-logo-img {
     height: 70px;
+
   }
 
   .top-action-btn {
