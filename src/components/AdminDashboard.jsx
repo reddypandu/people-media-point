@@ -3,6 +3,7 @@ import { supabase } from '../supabase';
 import { useNavigate, Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { MOCK_ARTICLES } from '../constants/articlesData';
+import AdminContentManager from './AdminContentManager';
 
 const AdminDashboard = () => {
   const [articles, setArticles] = useState([]);
@@ -103,6 +104,7 @@ const AdminDashboard = () => {
 
 
       <div className="dashboard-content">
+        <AdminContentManager />
         {loading ? (
           <p>Loading articles...</p>
         ) : (

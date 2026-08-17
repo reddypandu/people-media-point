@@ -4,6 +4,7 @@ import { supabase } from '../supabase';
 import { ChevronLeft, ChevronRight, Play, Clock, Flame } from 'lucide-react';
 import TranslatedText from './TranslatedText';
 import { MOCK_ARTICLES } from '../constants/articlesData';
+import SidebarAd from './SidebarAd';
 
 const HeroSection = () => {
   const [slides, setSlides] = useState([]);
@@ -142,6 +143,7 @@ const HeroSection = () => {
 
           {/* Right Sidebar Column - Bulletins & Video */}
           <div className="hero-side-column">
+            <SidebarAd />
             {/* V6 Bulletins Box */}
             <div className="bulletin-box">
               <div className="bulletin-header">
