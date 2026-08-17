@@ -21,7 +21,7 @@ const Footer = () => {
             </p>
             <div className="footer-social-icons">
               <a
-                href="https://www.youtube.com/channel/UCNAvk1-pAEntHLGOuaAKlDg"
+                href="https://www.youtube.com/@peoplemediapoint"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-btn youtube"
@@ -33,7 +33,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://www.instagram.com/aakasham_tv/"
+                href="https://www.instagram.com/peoplemediapoint/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-btn instagram"
@@ -46,7 +46,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com/aakashamtv/photos/"
+                href="https://www.facebook.com/p/People-Media-Point-61567337791194/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-btn facebook"
