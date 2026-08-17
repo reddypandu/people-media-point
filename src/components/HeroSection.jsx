@@ -31,7 +31,7 @@ const HeroSection = () => {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(6);
-      
+
       if (!error && sliderArticles && sliderArticles.length > 0) {
         setSlides(sliderArticles);
       } else {
@@ -45,7 +45,7 @@ const HeroSection = () => {
   const getEmbedUrl = (url) => {
     if (!url) return '';
     let videoId = '';
-    
+
     if (url.includes('youtube.com/watch?v=')) {
       videoId = url.split('v=')[1]?.split('&')[0];
     } else if (url.includes('youtu.be/')) {
@@ -55,7 +55,7 @@ const HeroSection = () => {
     } else if (url.includes('youtube.com/shorts/')) {
       videoId = url.split('shorts/')[1]?.split('?')[0];
     }
-    
+
     return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
   };
 
@@ -63,7 +63,7 @@ const HeroSection = () => {
     if (e) e.stopPropagation();
     if (slides.length > 0) setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
-  
+
   const prevSlide = (e) => {
     if (e) e.stopPropagation();
     if (slides.length > 0) setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -85,26 +85,26 @@ const HeroSection = () => {
             {slides.length > 0 && currentArticle ? (
               <div className="slider-card" onClick={() => handleSlideClick(currentArticle.id)}>
                 <div className="slide-image-box">
-                  <img 
-                    src={currentArticle.image_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80"} 
-                    alt={currentArticle.title} 
-                    className="slide-img" 
+                  <img
+                    src={currentArticle.image_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80"}
+                    alt={currentArticle.title}
+                    className="slide-img"
                   />
                   <div className="slide-overlay-gradient"></div>
-                  
+
                   <div className="slide-badge-top">
                     <span className="flame-icon"><Flame size={14} /></span>
                     <TranslatedText>TOP STORY</TranslatedText>
                   </div>
 
-                  <div className="slider-nav-arrows">
+                  {/* <div className="slider-nav-arrows">
                     <button className="slider-arrow prev" onClick={prevSlide} aria-label="Previous News">
                       <ChevronLeft size={20} />
                     </button>
                     <button className="slider-arrow next" onClick={nextSlide} aria-label="Next News">
                       <ChevronRight size={20} />
                     </button>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="slide-info-card">
@@ -131,8 +131,8 @@ const HeroSection = () => {
             {/* Slider Dots */}
             <div className="slider-dots-container">
               {slides.map((_, index) => (
-                <button 
-                  key={index} 
+                <button
+                  key={index}
                   className={`dot-btn ${index === currentSlide ? 'active' : ''}`}
                   onClick={() => setCurrentSlide(index)}
                   aria-label={`Go to slide ${index + 1}`}
@@ -153,8 +153,8 @@ const HeroSection = () => {
 
               <div className="bulletin-list">
                 {sideArticles.map((art) => (
-                  <div 
-                    key={art.id} 
+                  <div
+                    key={art.id}
                     className="bulletin-item"
                     onClick={() => handleSlideClick(art.id)}
                   >
@@ -180,8 +180,8 @@ const HeroSection = () => {
                   <span><TranslatedText>Video News Bulletin</TranslatedText></span>
                 </div>
                 <div className="video-frame-wrapper">
-                  <iframe 
-                    src={getEmbedUrl(currentArticle.video_url)} 
+                  <iframe
+                    src={getEmbedUrl(currentArticle.video_url)}
                     title="News Video"
                     allowFullScreen
                   ></iframe>
@@ -190,10 +190,10 @@ const HeroSection = () => {
             )}
 
             {/* Join WhatsApp Channel Banner */}
-            <a 
-              href={whatsappLink} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
               className="whatsapp-promo-card"
               style={{
                 background: 'linear-gradient(135deg, #128C7E 0%, #075E54 100%)',
@@ -224,11 +224,13 @@ const HeroSection = () => {
         .v6-hero-wrapper {
           padding: 1.5rem 0;
           background: #F4F6F9;
+          max-width:1000px;
+          margin:0 auto;
         }
 
         .v6-hero-grid {
           display: grid;
-          grid-template-columns: 1.6fr 1fr;
+          grid-template-columns: 1.6fr 0.8fr;
           gap: 1.5rem;
         }
 
@@ -264,7 +266,7 @@ const HeroSection = () => {
         .slide-img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           transition: transform 0.6s ease;
         }
 

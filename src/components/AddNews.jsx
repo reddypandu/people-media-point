@@ -112,6 +112,10 @@ const AddNews = () => {
 
   const handleFileUpload = async (file) => {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file.');
+      return;
+    }
     setUploading(true);
 
     try {
@@ -124,23 +128,15 @@ const AddNews = () => {
         .upload(filePath, file);
 
       if (uploadError) {
-        // Fallback: Convert to Data URL if Supabase storage bucket doesn't exist yet
-        console.warn('Supabase storage bucket upload error:', uploadError.message);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData(prev => ({ ...prev, image_url: reader.result }));
-          alert('Notice: Supabase bucket "news-images" not found, using local image preview. Create "news-images" public bucket in Supabase Storage for cloud image storage.');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const { data: { publicUrl } } = supabase.storage
-          .from('news-images')
-          .getPublicUrl(filePath);
-
-        setFormData(prev => ({ ...prev, image_url: publicUrl }));
+        throw new Error(uploadError.message);
       }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('news-images')
+        .getPublicUrl(filePath);
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
     } catch (error) {
-      alert('Upload Notice: Using image file. ' + error.message);
+      alert(`Image upload failed: ${error.message}. The "news-images" bucket exists, so please run the Storage policy migration and make sure the bucket is public.`);
     } finally {
       setUploading(false);
     }
