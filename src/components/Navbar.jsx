@@ -104,13 +104,18 @@ const Navbar = () => {
           </Link>
 
           <div className="header-right-promo">
-            <div className="live-tv-banner">
+            <a
+              href="https://www.youtube.com/@peoplemediapoint/live"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="live-tv-banner"
+            >
               <Tv size={18} color="#D32F2F" />
               <div className="live-tv-text">
                 <span className="live-tv-label">LIVE TV</span>
                 <span className="live-tv-sub"><TranslatedText>Watch Stream</TranslatedText></span>
               </div>
-            </div>
+            </a>
 
 
           </div>
