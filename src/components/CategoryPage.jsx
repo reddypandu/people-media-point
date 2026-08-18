@@ -82,6 +82,12 @@ const CategoryPage = () => {
       <div className="container v6-page-body">
         {isHome ? (
           /* Multi-Sectional Homepage Layout (Andhra Jyothi & V6 Style) */
+          loading ? (
+            <div className="loading-box" role="status" aria-live="polite">
+              <span className="loading-spinner" aria-hidden="true" />
+              <p><TranslatedText>Loading news...</TranslatedText></p>
+            </div>
+          ) : (
           <div className="home-sections-container">
             {/* Telangana News Section */}
             {telanganaArticles.length > 0 && (
@@ -152,6 +158,7 @@ const CategoryPage = () => {
               </div>
             </section>
           </div>
+          )
         ) : (
           /* Category / District Dedicated Page Layout */
           <div className="dedicated-category-page">
@@ -163,7 +170,8 @@ const CategoryPage = () => {
             </div>
 
             {loading ? (
-              <div className="loading-box">
+              <div className="loading-box" role="status" aria-live="polite">
+                <span className="loading-spinner" aria-hidden="true" />
                 <p><TranslatedText>Loading news...</TranslatedText></p>
               </div>
             ) : articles.length > 0 ? (
@@ -292,6 +300,24 @@ const CategoryPage = () => {
           text-align: center;
           color: #64748B;
           font-size: 1.1rem;
+        }
+
+        .loading-spinner {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          border: 3px solid #E2E8F0;
+          border-top-color: #D32F2F;
+          border-radius: 50%;
+          animation: spin 0.75s linear infinite;
+        }
+
+        .loading-box p {
+          margin: 0.8rem 0 0;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
