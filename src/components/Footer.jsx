@@ -101,15 +101,15 @@ const Footer = () => {
             <ul className="footer-links-list" style={{ gap: '0.8rem' }}>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', lineHeight: '1.4' }}>
                 <MapPin size={16} style={{ flexShrink: 0, marginTop: '2px', color: '#D32F2F' }} />
-                <span>Hyderabad, Telangana - 500082</span>
+                <span>Eureka court complex, B9, 3rd floor, beside image hospital, Ameerpet, hyderabad.</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
                 <Phone size={14} style={{ color: '#D32F2F' }} />
-                <span>+91 7777888806</span>
+                <span>+918886166565</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
                 <Mail size={14} style={{ color: '#D32F2F' }} />
-                <span>info@peoplemediapoint.com</span>
+                <span>psrnewschannel@gmail.com</span>
               </li>
             </ul>
           </div>

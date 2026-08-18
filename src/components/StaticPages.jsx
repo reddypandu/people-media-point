@@ -179,7 +179,7 @@ export const ContactUs = () => {
                 <div className="contact-text-box">
                   <h4><TranslatedText>Office Address</TranslatedText></h4>
                   <p>
-                    <TranslatedText>People Media Point Network, 1st Floor, Amrutha Mall, Somajiguda Circle, Rajbhavan Road, Hyderabad, Telangana - 500082</TranslatedText>
+                    <TranslatedText>People Media Point Network, 1st Floor, Amrutha Mall, Somajiguda Circle, Rajbhavan Road, Eureka court complex, B9, 3rd floor, beside image hospital, Ameerpet, hyderabad.</TranslatedText>
                   </p>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export const ContactUs = () => {
                 <div className="contact-icon-box"><Phone size={22} /></div>
                 <div className="contact-text-box">
                   <h4><TranslatedText>Phone & Newsroom</TranslatedText></h4>
-                  <p>+91 8008457750</p>
+                  <p>+918886166565</p>
                 </div>
               </div>
 
@@ -196,7 +196,7 @@ export const ContactUs = () => {
                 <div className="contact-icon-box"><Mail size={22} /></div>
                 <div className="contact-text-box">
                   <h4><TranslatedText>Email Address</TranslatedText></h4>
-                  <p>info@peoplemediapoint.com</p>
+                  <p>psrnewschannel@gmail.com</p>
                 </div>
               </div>
 
