@@ -7,6 +7,7 @@ import LanguageSelector from './LanguageSelector';
 import TranslatedText from './TranslatedText';
 import BreakingTicker from './BreakingTicker';
 import { supabase } from '../supabase';
+import QR from '../assets/qr.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -110,12 +111,21 @@ const Navbar = () => {
               rel="noopener noreferrer"
               className="live-tv-banner"
             >
-              <Tv size={18} color="#D32F2F" />
+              <Tv size={16} color="#D32F2F" />
               <div className="live-tv-text">
                 <span className="live-tv-label">LIVE TV</span>
-                <span className="live-tv-sub"><TranslatedText>Watch Stream</TranslatedText></span>
+                {/* <span className="live-tv-sub"><TranslatedText>Watch Stream</TranslatedText></span> */}
               </div>
             </a>
+            <div className="live-tv-qr">
+              <img
+                src={QR}
+                alt=""
+                width={70}
+                height={70}
+              />
+            </div>
+
 
 
           </div>
