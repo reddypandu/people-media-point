@@ -79,7 +79,9 @@ export const saveLatestEpaper = async (pdfUrl, imageUrl) => {
       image_url: imageUrl || DEFAULT_EPAPER_THUMB,
       author: 'Admin',
       is_hero_slider: false,
-      is_top_hero: false
+      is_top_hero: false,
+      is_expiring: false,
+      expires_at: null
     }]);
   } catch (e) {
     console.warn('Supabase DB notice:', e.message);

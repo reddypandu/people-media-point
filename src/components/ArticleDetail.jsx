@@ -40,6 +40,7 @@ const ArticleDetail = () => {
       .from('articles')
       .select('*, categories(name), districts(name)')
       .eq('id', id)
+      .or(`is_expiring.eq.false,expires_at.gt.${new Date().toISOString()}`)
       .single();
 
     if (!error) setArticle(data);

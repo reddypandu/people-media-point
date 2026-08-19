@@ -20,7 +20,7 @@ serve(async (req) => {
     const { action, data } = await req.json()
 
     if (action === 'create-article') {
-      const { title, content, image_url, video_url, category_id, district_id, is_hero_slider, is_top_hero, whatsapp_link } = data
+      const { title, content, image_url, image_storage_path, video_url, category_id, district_id, is_hero_slider, is_top_hero, whatsapp_link } = data
       
       const { data: article, error } = await supabaseClient
         .from('articles')
@@ -28,6 +28,7 @@ serve(async (req) => {
           title, 
           content, 
           image_url, 
+          image_storage_path,
           video_url, 
           category_id, 
           district_id, 
@@ -45,7 +46,7 @@ serve(async (req) => {
     }
 
     if (action === 'update-article') {
-      const { id, title, content, image_url, video_url, category_id, district_id, is_hero_slider, is_top_hero, whatsapp_link } = data
+      const { id, title, content, image_url, image_storage_path, video_url, category_id, district_id, is_hero_slider, is_top_hero, whatsapp_link } = data
       
       const { data: article, error } = await supabaseClient
         .from('articles')
@@ -53,6 +54,7 @@ serve(async (req) => {
           title, 
           content, 
           image_url, 
+          image_storage_path,
           video_url, 
           category_id: category_id ? parseInt(category_id) : null, 
           district_id: district_id ? parseInt(district_id) : null, 
@@ -131,7 +133,9 @@ serve(async (req) => {
             title: 'DAILY_EPAPER',
             content: pdf_url,
             image_url: image_url,
-            category_id: category.id
+            category_id: category.id,
+            is_expiring: false,
+            expires_at: null
           }])
           .select()
         if (error) throw error

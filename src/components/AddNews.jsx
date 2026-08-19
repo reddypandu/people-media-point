@@ -10,6 +10,7 @@ const AddNews = () => {
     title: '',
     content: '',
     image_url: '',
+    image_storage_path: '',
     video_url: '',
     category_id: '',
     district_id: '',
@@ -42,6 +43,7 @@ const AddNews = () => {
           title: data.title || '',
           content: data.content || '',
           image_url: data.image_url || '',
+          image_storage_path: data.image_storage_path || '',
           video_url: data.video_url || '',
           category_id: data.category_id || '',
           district_id: data.district_id || '',
@@ -134,7 +136,11 @@ const AddNews = () => {
       const { data: { publicUrl } } = supabase.storage
         .from('news-images')
         .getPublicUrl(filePath);
-      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      setFormData(prev => ({
+        ...prev,
+        image_url: publicUrl,
+        image_storage_path: filePath,
+      }));
     } catch (error) {
       alert(`Image upload failed: ${error.message}. The "news-images" bucket exists, so please run the Storage policy migration and make sure the bucket is public.`);
     } finally {
@@ -169,6 +175,7 @@ const AddNews = () => {
       title: formData.title,
       content: formData.content,
       image_url: formData.image_url,
+      image_storage_path: formData.image_storage_path || null,
       video_url: formData.video_url,
       category_id: formData.category_id ? parseInt(formData.category_id) : null,
       district_id: formData.district_id ? parseInt(formData.district_id) : null,
@@ -313,7 +320,7 @@ const AddNews = () => {
                   <button
                     type="button"
                     className="remove-img-btn"
-                    onClick={() => setFormData({ ...formData, image_url: '' })}
+                    onClick={() => setFormData({ ...formData, image_url: '', image_storage_path: '' })}
                   >
                     Remove Image
                   </button>
@@ -339,7 +346,7 @@ const AddNews = () => {
                 type="url"
                 placeholder="https://images.unsplash.com/..."
                 value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value, image_storage_path: '' })}
                 style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '4px', marginTop: '4px' }}
               />
             </div>

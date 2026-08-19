@@ -11,7 +11,7 @@ import LanguageSelector from "./LanguageSelector";
 import TranslatedText from "./TranslatedText";
 import BreakingTicker from "./BreakingTicker";
 import { supabase } from "../supabase";
-import QR from "../assets/qr.png";
+import QR from "../assets/people-media-qr.png";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -28,6 +28,9 @@ CREATE TABLE articles (
   is_hero_slider BOOLEAN DEFAULT false,
   is_top_hero BOOLEAN DEFAULT false,
   whatsapp_link TEXT,
+  image_storage_path TEXT,
+  is_expiring BOOLEAN DEFAULT true NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE DEFAULT (timezone('utc'::text, now()) + INTERVAL '7 days'),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

@@ -201,6 +201,8 @@ body {
 .category-bar-container {
   display: flex;
   align-items: center;
+  max-width: none;
+  padding: 0;
 }
 
 .nav-links-wrapper {
@@ -579,9 +581,19 @@ body {
 }
 
 .nav-links-list {
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  /* A second row is preferable to making the entire page horizontally scroll. */
+  flex-wrap: wrap;
+  /* Keep desktop dropdowns outside the bar without creating a scroll area. */
+  overflow: visible;
   scrollbar-width: none;
+}
+
+/* The final desktop menu opens inward, so it cannot extend the page width. */
+@media (min-width: 993px) {
+  .nav-links-list > .has-dropdown:last-child .dropdown-menu {
+    /* left: auto; */
+    right: 0;
+  }
 }
 
 .nav-links-list::-webkit-scrollbar {

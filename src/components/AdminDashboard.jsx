@@ -32,10 +32,10 @@ const AdminDashboard = () => {
         .select('*, categories(name)')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
         setArticles(data);
       } else {
-        // Fallback to MOCK_ARTICLES if DB is empty
+        // Only use sample data when the database cannot be read.
         setArticles(MOCK_ARTICLES);
       }
     } catch (e) {

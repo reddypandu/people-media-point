@@ -29,10 +29,12 @@ const HeroSection = () => {
       const { data: sliderArticles, error } = await supabase
         .from('articles')
         .select('*')
+        .or(`is_expiring.eq.false,expires_at.gt.${new Date().toISOString()}`)
         .order('created_at', { ascending: false })
         .limit(6);
 
-      if (!error && sliderArticles && sliderArticles.length > 0) {
+      if (!error && sliderArticles) {
+        // Keep the hero empty when every article has expired.
         setSlides(sliderArticles);
       } else {
         setSlides(MOCK_ARTICLES);
@@ -73,7 +75,7 @@ const HeroSection = () => {
     navigate(`/article/${id}`);
   };
 
-  const currentArticle = slides[currentSlide] || MOCK_ARTICLES[0];
+  const currentArticle = slides[currentSlide] || null;
   const sideArticles = slides.filter((_, idx) => idx !== currentSlide).slice(0, 4);
 
   return (
@@ -173,7 +175,7 @@ const HeroSection = () => {
             </div>
 
             {/* Video News Card */}
-            {currentArticle.video_url && (
+            {currentArticle?.video_url && (
               <div className="hero-video-card">
                 <div className="video-card-header">
                   <Play size={16} fill="#D32F2F" color="#D32F2F" />

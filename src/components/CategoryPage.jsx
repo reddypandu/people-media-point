@@ -23,7 +23,10 @@ const CategoryPage = () => {
   const fetchArticles = async () => {
     setLoading(true);
     try {
-      let query = supabase.from('articles').select('*, categories(name, slug), districts(name)');
+      let query = supabase
+        .from('articles')
+        .select('*, categories(name, slug), districts(name)')
+        .or(`is_expiring.eq.false,expires_at.gt.${new Date().toISOString()}`);
 
       if (categoryId && categoryId !== 'home') {
         query = query.eq('categories.slug', categoryId);
@@ -35,7 +38,8 @@ const CategoryPage = () => {
 
       const { data, error } = await query.order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
+        // An empty result is valid: all published news may have expired.
         setArticles(data);
       } else {
         // Fallback filter on MOCK_ARTICLES
