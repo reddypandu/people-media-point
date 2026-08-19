@@ -102,7 +102,11 @@ const Navbar = () => {
             />
           </Link>
           <div className="header-right-promo">
-            <div className="live-tv-qr">
+            <Link
+              to="https://www.youtube.com/@peoplemediapoint/"
+              className="live-tv-qr"
+              target="_blank"
+            >
               <img
                 src={QR}
                 alt="Scan to watch People Media Point Live TV"
@@ -110,7 +114,7 @@ const Navbar = () => {
                 height={100}
               />
               {/* <span>Scan to watch</span> */}
-            </div>
+            </Link>
             <div className="header-utilities">
               <a
                 href="https://www.youtube.com/@peoplemediapoint/live"
