@@ -90,18 +90,17 @@ const Navbar = () => {
       {/* Main Brand Logo Header Row */}
       <div className="nav-main-header">
         <div className="container nav-header-container">
+          <div className="brand-subtitle">
+            <span className="live-bullet"></span>
+            <TranslatedText>24x7 Telugu News Portal</TranslatedText>
+          </div>
           <Link to="/" className="brand-logo-link">
             <img
               src={logo}
               alt="People Media Point"
               className="brand-logo-img"
             />
-            <div className="brand-subtitle">
-              <span className="live-bullet"></span>
-              <TranslatedText>24x7 Telugu News Portal</TranslatedText>
-            </div>
           </Link>
-
           <div className="header-right-promo">
             <div className="live-tv-qr">
               <img
