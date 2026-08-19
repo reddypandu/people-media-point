@@ -669,6 +669,19 @@ body {
   }
 }
 
+.telugu-mission-block {
+  border-left-color: var(--accent-red);
+}
+
+.telugu-mission-block .lead-text,
+.telugu-mission-block .body-text {
+  line-height: 1.9;
+}
+
+.telugu-mission-block .mission-lines {
+  white-space: pre-line;
+}
+
 /* Footer Styling */
 .footer-rtv {
   background: var(--primary-navy);

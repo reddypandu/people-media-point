@@ -43,6 +43,29 @@ export const AboutUs = () => (
         </p>
       </div>
 
+      {/* Editorial mission statement */}
+      <div className="info-card-block telugu-mission-block">
+        <h2 className="section-heading">
+          <span className="red-indicator"></span>
+          <TranslatedText>Our Mission</TranslatedText>
+        </h2>
+        <p className="lead-text">
+          <TranslatedText>People Media Point was born from our heartfelt belief that journalism must serve the public interest.</TranslatedText>
+        </p>
+        <p className="body-text">
+          <TranslatedText>We report the truth fearlessly, candidly, impartially, accurately, and with social responsibility.</TranslatedText>
+        </p>
+        <p className="body-text mission-lines">
+          <TranslatedText>{`As a weapon against wrongdoing...\nAs a vigilant eye that questions the truth...\nWith comprehensive analysis...\nWith investigative stories...\nPeople Media Point stands before you as a public watchdog.`}</TranslatedText>
+        </p>
+        <p className="body-text mission-lines">
+          <TranslatedText>{`The stories of farmers driven to despair when the crops they worked for do not reach their hands...\nOf educated unemployed youth forced into daily-wage work...\nOf workers who turn their hands into tools and their strength into power to feed humanity...\nOf labourers who invest their own blood and sweat in their work...\nAnd of the tears of daughters of this land, still unable to find justice even after decades...`}</TranslatedText>
+        </p>
+        <p className="body-text">
+          <TranslatedText>People Media Point continually examines these and many other issues that matter to the public.</TranslatedText>
+        </p>
+      </div>
+
       {/* Network & Channels Grid */}
       <div className="network-grid-section">
         <h2 className="section-heading">
