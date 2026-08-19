@@ -612,15 +612,37 @@ body {
 
 @media (max-width: 992px) {
   .nav-header-container {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: "brand menu";
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "brand qr menu";
     gap: 12px;
     min-height: 60px;
   }
 
-  .header-right-promo,
+  /* .header-right-promo, */
   .header-utilities {
     display: none;
+  }
+
+  /* Show a compact QR code in the mobile header; desktop actions stay hidden. */
+  .header-right-promo {
+    grid-area: qr;
+    justify-self: end;
+    display: flex;
+  }
+
+  .header-right-promo .header-utilities,
+  .header-right-promo .live-tv-banner {
+    display: none;
+  }
+
+  .live-tv-qr {
+    padding: 2px;
+    border-radius: 6px;
+  }
+
+  .live-tv-qr img {
+    width: 46px;
+    height: 46px;
   }
 
   .hamburger-rtv {
@@ -658,6 +680,15 @@ body {
   }
 
   .hamburger-rtv {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-header-container {
+    gap: 8px;
+  }
+
+  .live-tv-qr img {
     width: 38px;
     height: 38px;
   }
