@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabase';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../supabase";
+import { useNavigate } from "react-router-dom";
 
 const AddNews = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    image_url: '',
-    image_storage_path: '',
-    video_url: '',
-    category_id: '',
-    district_id: '',
+    title: "",
+    content: "",
+    image_url: "",
+    image_storage_path: "",
+    video_url: "",
+    category_id: "",
+    district_id: "",
     is_hero_slider: false,
     is_top_hero: false,
-    whatsapp_link: ''
+    whatsapp_link: "",
   });
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(window.location.search);
-  const articleId = searchParams.get('id');
+  const articleId = searchParams.get("id");
 
   useEffect(() => {
     fetchCategories();
@@ -33,27 +33,27 @@ const AddNews = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('id', id)
+        .from("articles")
+        .select("*")
+        .eq("id", id)
         .single();
 
       if (!error && data) {
         setFormData({
-          title: data.title || '',
-          content: data.content || '',
-          image_url: data.image_url || '',
-          image_storage_path: data.image_storage_path || '',
-          video_url: data.video_url || '',
-          category_id: data.category_id || '',
-          district_id: data.district_id || '',
+          title: data.title || "",
+          content: data.content || "",
+          image_url: data.image_url || "",
+          image_storage_path: data.image_storage_path || "",
+          video_url: data.video_url || "",
+          category_id: data.category_id || "",
+          district_id: data.district_id || "",
           is_hero_slider: data.is_hero_slider || false,
           is_top_hero: data.is_top_hero || false,
-          whatsapp_link: data.whatsapp_link || ''
+          whatsapp_link: data.whatsapp_link || "",
         });
       }
     } catch (e) {
-      console.log('Error fetching article for edit', e);
+      console.log("Error fetching article for edit", e);
     } finally {
       setLoading(false);
     }
@@ -72,77 +72,97 @@ const AddNews = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await supabase.from('categories').select('*');
+      const { data } = await supabase.from("categories").select("*");
       if (data && data.length > 0) {
         setCategories(data);
       } else {
         setCategories([
-          { id: 1, name: 'Latest News' },
-          { id: 2, name: 'Telangana' },
-          { id: 3, name: 'Andhra Pradesh' },
-          { id: 4, name: 'Politics' },
-          { id: 5, name: 'Movie' },
-          { id: 6, name: 'Crime' },
-          { id: 7, name: 'Sports' },
-          { id: 8, name: 'Technology' },
-          { id: 9, name: 'Business' }
+          { id: 1, name: "Latest News" },
+          { id: 2, name: "Telangana" },
+          { id: 3, name: "Andhra Pradesh" },
+          { id: 4, name: "Politics" },
+          { id: 5, name: "Movie" },
+          { id: 6, name: "Crime" },
+          { id: 7, name: "Sports" },
+          { id: 8, name: "Technology" },
+          { id: 9, name: "Business" },
         ]);
       }
     } catch (e) {
       setCategories([
-        { id: 1, name: 'Latest News' },
-        { id: 2, name: 'Telangana' },
-        { id: 3, name: 'Andhra Pradesh' },
-        { id: 4, name: 'Politics' },
-        { id: 5, name: 'Movie' },
-        { id: 6, name: 'Crime' },
-        { id: 7, name: 'Sports' },
-        { id: 8, name: 'Technology' },
-        { id: 9, name: 'Business' }
+        { id: 1, name: "Latest News" },
+        { id: 2, name: "Telangana" },
+        { id: 3, name: "Andhra Pradesh" },
+        { id: 4, name: "Politics" },
+        { id: 5, name: "Movie" },
+        { id: 6, name: "Crime" },
+        { id: 7, name: "Sports" },
+        { id: 8, name: "Technology" },
+        { id: 9, name: "Business" },
       ]);
     }
   };
 
   const fetchDistricts = async (categoryId) => {
     try {
-      const { data } = await supabase.from('districts').select('*').eq('category_id', categoryId);
+      const { data } = await supabase
+        .from("districts")
+        .select("*")
+        .eq("category_id", categoryId);
       setDistricts(data || []);
     } catch (e) {
       setDistricts([]);
     }
   };
 
+  const removeStoredFile = async (imagePath) => {
+    if (!imagePath) return;
+
+    try {
+      const { error } = await supabase.storage
+        .from("news-images")
+        .remove([imagePath]);
+      if (error) {
+        console.warn("Image cleanup warning:", error.message);
+      }
+    } catch (err) {
+      console.warn("Image cleanup failed:", err);
+    }
+  };
+
   const handleFileUpload = async (file) => {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file.');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
       return;
     }
     setUploading(true);
 
     try {
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `news-articles/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('news-images')
+        .from("news-images")
         .upload(filePath, file);
 
       if (uploadError) {
         throw new Error(uploadError.message);
       }
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('news-images')
-        .getPublicUrl(filePath);
-      setFormData(prev => ({
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("news-images").getPublicUrl(filePath);
+      setFormData((prev) => ({
         ...prev,
         image_url: publicUrl,
         image_storage_path: filePath,
       }));
     } catch (error) {
-      alert(`Image upload failed: ${error.message}. The "news-images" bucket exists, so please run the Storage policy migration and make sure the bucket is public.`);
+      alert(
+        `Image upload failed: ${error.message}. The "news-images" bucket exists, so please run the Storage policy migration and make sure the bucket is public.`,
+      );
     } finally {
       setUploading(false);
     }
@@ -181,35 +201,63 @@ const AddNews = () => {
       district_id: formData.district_id ? parseInt(formData.district_id) : null,
       is_hero_slider: formData.is_hero_slider,
       is_top_hero: formData.is_top_hero,
-      whatsapp_link: formData.whatsapp_link
+      whatsapp_link: formData.whatsapp_link,
     };
 
     try {
+      if (articleId) {
+        const { data: currentArticle, error: fetchError } = await supabase
+          .from("articles")
+          .select("image_storage_path")
+          .eq("id", articleId)
+          .single();
+
+        if (fetchError && fetchError.code !== "PGRST116") {
+          throw fetchError;
+        }
+
+        const previousImagePath = currentArticle?.image_storage_path;
+        if (
+          previousImagePath &&
+          previousImagePath !== formData.image_storage_path
+        ) {
+          await removeStoredFile(previousImagePath);
+        }
+      }
+
       let error;
       if (articleId) {
-        const res = await supabase.from('articles').update(payload).eq('id', articleId);
+        const res = await supabase
+          .from("articles")
+          .update(payload)
+          .eq("id", articleId);
         error = res.error;
       } else {
-        const res = await supabase.from('articles').insert([payload]);
+        const res = await supabase.from("articles").insert([payload]);
         error = res.error;
       }
 
       if (error) {
-        // Fallback: Check if edge function was requested
-        console.warn('Direct database error:', error.message);
-        const { data: fnData, error: fnError } = await supabase.functions.invoke('manage-articles', {
-          body: { action: articleId ? 'update-article' : 'create-article', data: articleId ? { ...payload, id: articleId } : payload }
-        });
+        console.warn("Direct database error:", error.message);
+        const { data: fnData, error: fnError } =
+          await supabase.functions.invoke("manage-articles", {
+            body: {
+              action: articleId ? "update-article" : "create-article",
+              data: articleId ? { ...payload, id: articleId } : payload,
+            },
+          });
 
         if (fnError) {
           throw new Error(error.message || fnError.message);
         }
       }
 
-      alert(`Article ${articleId ? 'updated' : 'published'} successfully!`);
-      navigate('/admin/dashboard');
+      alert(`Article ${articleId ? "updated" : "published"} successfully!`);
+      navigate("/admin/dashboard");
     } catch (err) {
-      alert(`Notice: ${err.message}. If tables don't exist yet in Supabase, run supabase/schema.sql in Supabase SQL Editor.`);
+      alert(
+        `Notice: ${err.message}. If tables don't exist yet in Supabase, run supabase/schema.sql in Supabase SQL Editor.`,
+      );
     } finally {
       setLoading(false);
     }
@@ -218,8 +266,12 @@ const AddNews = () => {
   return (
     <div className="add-news-container">
       <div className="form-header">
-        <h2>{articleId ? 'Edit Article' : 'Post New Article'}</h2>
-        <p>{articleId ? 'Update the details of your article below.' : 'Fill in the details below to publish news across People Media Point.'}</p>
+        <h2>{articleId ? "Edit Article" : "Post New Article"}</h2>
+        <p>
+          {articleId
+            ? "Update the details of your article below."
+            : "Fill in the details below to publish news across People Media Point."}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="news-form">
@@ -231,7 +283,9 @@ const AddNews = () => {
               type="text"
               placeholder="Enter news title in Telugu/English..."
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
             />
           </div>
@@ -241,7 +295,9 @@ const AddNews = () => {
             <textarea
               placeholder="Write the full story here..."
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
               rows="10"
               required
             />
@@ -255,12 +311,16 @@ const AddNews = () => {
               <label>Target Category</label>
               <select
                 value={formData.category_id}
-                onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, category_id: e.target.value })
+                }
                 required
               >
                 <option value="">Select Category</option>
-                {categories.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -270,11 +330,15 @@ const AddNews = () => {
                 <label>District (Optional)</label>
                 <select
                   value={formData.district_id}
-                  onChange={(e) => setFormData({ ...formData, district_id: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, district_id: e.target.value })
+                  }
                 >
                   <option value="">Select District</option>
-                  {districts.map(d => (
-                    <option key={d.id} value={d.id}>{d.name}</option>
+                  {districts.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -286,7 +350,9 @@ const AddNews = () => {
               <input
                 type="checkbox"
                 checked={formData.is_top_hero}
-                onChange={(e) => setFormData({ ...formData, is_top_hero: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({ ...formData, is_top_hero: e.target.checked })
+                }
               />
               Show in Hero Main Banner
             </label>
@@ -295,7 +361,9 @@ const AddNews = () => {
               <input
                 type="checkbox"
                 checked={formData.is_hero_slider}
-                onChange={(e) => setFormData({ ...formData, is_hero_slider: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({ ...formData, is_hero_slider: e.target.checked })
+                }
               />
               Include in Trending / Latest News
             </label>
@@ -308,7 +376,7 @@ const AddNews = () => {
           <div className="form-group">
             <label>Featured Image</label>
             <div
-              className={`drag-drop-zone ${dragActive ? 'active' : ''}`}
+              className={`drag-drop-zone ${dragActive ? "active" : ""}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
@@ -316,18 +384,30 @@ const AddNews = () => {
             >
               {formData.image_url ? (
                 <div className="preview-container">
-                  <img src={formData.image_url} alt="Preview" className="image-preview" />
+                  <img
+                    src={formData.image_url}
+                    alt="Preview"
+                    className="image-preview"
+                  />
                   <button
                     type="button"
                     className="remove-img-btn"
-                    onClick={() => setFormData({ ...formData, image_url: '', image_storage_path: '' })}
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        image_url: "",
+                        image_storage_path: "",
+                      })
+                    }
                   >
                     Remove Image
                   </button>
                 </div>
               ) : (
                 <div className="upload-prompt">
-                  <p>Drag and drop an image here, or <span>browse</span></p>
+                  <p>
+                    Drag and drop an image here, or <span>browse</span>
+                  </p>
                   <input
                     type="file"
                     accept="image/*"
@@ -335,19 +415,35 @@ const AddNews = () => {
                     disabled={uploading}
                     className="file-input-hidden"
                   />
-                  {uploading && <p className="uploading-text">Uploading image...</p>}
+                  {uploading && (
+                    <p className="uploading-text">Uploading image...</p>
+                  )}
                 </div>
               )}
             </div>
 
-            <div style={{ marginTop: '0.8rem' }}>
-              <label style={{ fontSize: '0.85rem', color: '#666' }}>Or paste image web URL directly:</label>
+            <div style={{ marginTop: "0.8rem" }}>
+              <label style={{ fontSize: "0.85rem", color: "#666" }}>
+                Or paste image web URL directly:
+              </label>
               <input
                 type="url"
                 placeholder="https://images.unsplash.com/..."
                 value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value, image_storage_path: '' })}
-                style={{ width: '100%', padding: '0.6rem', border: '1px solid #ccc', borderRadius: '4px', marginTop: '4px' }}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    image_url: e.target.value,
+                    image_storage_path: "",
+                  })
+                }
+                style={{
+                  width: "100%",
+                  padding: "0.6rem",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  marginTop: "4px",
+                }}
               />
             </div>
           </div>
@@ -358,7 +454,9 @@ const AddNews = () => {
               type="url"
               placeholder="https://www.youtube.com/watch?v=..."
               value={formData.video_url}
-              onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, video_url: e.target.value })
+              }
             />
           </div>
 
@@ -368,17 +466,27 @@ const AddNews = () => {
               type="url"
               placeholder="https://whatsapp.com/channel/..."
               value={formData.whatsapp_link}
-              onChange={(e) => setFormData({ ...formData, whatsapp_link: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, whatsapp_link: e.target.value })
+              }
             />
           </div>
         </div>
 
         <div className="form-actions">
-          <button type="button" onClick={() => navigate('/admin/dashboard')} className="cancel-btn">
+          <button
+            type="button"
+            onClick={() => navigate("/admin/dashboard")}
+            className="cancel-btn"
+          >
             Cancel
           </button>
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Publishing...' : (articleId ? 'Update Article' : 'Publish News')}
+            {loading
+              ? "Publishing..."
+              : articleId
+                ? "Update Article"
+                : "Publish News"}
           </button>
         </div>
       </form>
@@ -394,7 +502,10 @@ const AddNews = () => {
           border-bottom: 2px solid #001d3d;
           padding-bottom: 1rem;
         }
-        .form-header h2 { color: #001d3d; margin-bottom: 0.5rem; }
+        .form-header h2 {
+          color: #001d3d;
+          margin-bottom: 0.5rem;
+        }
         .news-form {
           display: flex;
           flex-direction: column;
@@ -404,8 +515,8 @@ const AddNews = () => {
           background: white;
           padding: 1.8rem;
           border-radius: 10px;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-          border: 1px solid #E2E8F0;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+          border: 1px solid #e2e8f0;
         }
         .form-section h3 {
           color: #001d3d;
@@ -465,8 +576,8 @@ const AddNews = () => {
           cursor: pointer;
         }
         .drag-drop-zone.active {
-          border-color: #D32F2F;
-          background: #FEF2F2;
+          border-color: #d32f2f;
+          background: #fef2f2;
         }
         .file-input-hidden {
           position: absolute;
@@ -517,7 +628,9 @@ const AddNews = () => {
           cursor: pointer;
           font-weight: 700;
         }
-        .submit-btn:hover { background: #D32F2F; }
+        .submit-btn:hover {
+          background: #d32f2f;
+        }
       `}</style>
     </div>
   );

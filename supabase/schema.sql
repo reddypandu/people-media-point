@@ -149,3 +149,30 @@ BEGIN
     SELECT 1 FROM districts d WHERE d.name = v.name AND d.category_id = ap_id
   );
 END $$;
+
+-- Storage policies for uploaded news images.
+-- Needed because deleting an article also triggers cleanup in storage.objects.
+DROP POLICY IF EXISTS "news_images_public_read" ON storage.objects;
+CREATE POLICY "news_images_public_read"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'news-images');
+
+DROP POLICY IF EXISTS "news_images_browser_upload" ON storage.objects;
+CREATE POLICY "news_images_browser_upload"
+ON storage.objects FOR INSERT
+TO public
+WITH CHECK (bucket_id = 'news-images');
+
+DROP POLICY IF EXISTS "news_images_browser_delete" ON storage.objects;
+CREATE POLICY "news_images_browser_delete"
+ON storage.objects FOR DELETE
+TO public
+USING (bucket_id = 'news-images');
+
+DROP POLICY IF EXISTS "news_images_browser_update" ON storage.objects;
+CREATE POLICY "news_images_browser_update"
+ON storage.objects FOR UPDATE
+TO public
+USING (bucket_id = 'news-images')
+WITH CHECK (bucket_id = 'news-images');

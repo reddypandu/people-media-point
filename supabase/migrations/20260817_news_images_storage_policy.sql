@@ -18,3 +18,16 @@ CREATE POLICY "news_images_browser_upload"
 ON storage.objects FOR INSERT
 TO public
 WITH CHECK (bucket_id = 'news-images');
+
+DROP POLICY IF EXISTS "news_images_browser_delete" ON storage.objects;
+CREATE POLICY "news_images_browser_delete"
+ON storage.objects FOR DELETE
+TO public
+USING (bucket_id = 'news-images');
+
+DROP POLICY IF EXISTS "news_images_browser_update" ON storage.objects;
+CREATE POLICY "news_images_browser_update"
+ON storage.objects FOR UPDATE
+TO public
+USING (bucket_id = 'news-images')
+WITH CHECK (bucket_id = 'news-images');

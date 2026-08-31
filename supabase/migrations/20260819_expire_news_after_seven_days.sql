@@ -70,62 +70,15 @@ CREATE INDEX IF NOT EXISTS sidebar_ads_expiry_index
   ON public.sidebar_ads (expires_at)
   WHERE is_expiring = true;
 
--- Delete a previous image when an editor replaces it, and delete the final
--- uploaded image when the article is manually deleted or automatically expires.
-CREATE OR REPLACE FUNCTION public.remove_article_storage_image()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, storage
-AS $$
-BEGIN
-  IF OLD.image_storage_path IS NOT NULL
-     AND (TG_OP = 'DELETE' OR OLD.image_storage_path IS DISTINCT FROM NEW.image_storage_path) THEN
-    DELETE FROM storage.objects
-    WHERE bucket_id = 'news-images'
-      AND name = OLD.image_storage_path;
-  END IF;
-
-  RETURN COALESCE(NEW, OLD);
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION public.remove_content_storage_image()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, storage
-AS $$
-BEGIN
-  IF OLD.image_storage_path IS NOT NULL THEN
-    DELETE FROM storage.objects
-    WHERE bucket_id = 'news-images'
-      AND name = OLD.image_storage_path;
-  END IF;
-
-  RETURN OLD;
-END;
-$$;
-
+-- NOTE: Direct SQL deletes from storage.objects are blocked by Supabase Storage.
+-- Image cleanup is handled from the application using the Storage API instead.
 DROP TRIGGER IF EXISTS articles_remove_replaced_image ON public.articles;
-CREATE TRIGGER articles_remove_replaced_image
-AFTER UPDATE OF image_storage_path ON public.articles
-FOR EACH ROW EXECUTE FUNCTION public.remove_article_storage_image();
-
 DROP TRIGGER IF EXISTS articles_remove_deleted_image ON public.articles;
-CREATE TRIGGER articles_remove_deleted_image
-AFTER DELETE ON public.articles
-FOR EACH ROW EXECUTE FUNCTION public.remove_article_storage_image();
-
 DROP TRIGGER IF EXISTS breaking_news_remove_deleted_image ON public.breaking_news;
-CREATE TRIGGER breaking_news_remove_deleted_image
-AFTER DELETE ON public.breaking_news
-FOR EACH ROW EXECUTE FUNCTION public.remove_content_storage_image();
-
 DROP TRIGGER IF EXISTS sidebar_ads_remove_deleted_image ON public.sidebar_ads;
-CREATE TRIGGER sidebar_ads_remove_deleted_image
-AFTER DELETE ON public.sidebar_ads
-FOR EACH ROW EXECUTE FUNCTION public.remove_content_storage_image();
+
+DROP FUNCTION IF EXISTS public.remove_article_storage_image();
+DROP FUNCTION IF EXISTS public.remove_content_storage_image();
 
 CREATE OR REPLACE FUNCTION public.purge_expired_articles()
 RETURNS void
