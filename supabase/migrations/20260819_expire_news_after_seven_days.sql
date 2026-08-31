@@ -7,6 +7,16 @@ ALTER TABLE public.articles
   ADD COLUMN IF NOT EXISTS is_expiring BOOLEAN NOT NULL DEFAULT true,
   ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;
 
+ALTER TABLE public.breaking_news
+  ADD COLUMN IF NOT EXISTS image_storage_path TEXT,
+  ADD COLUMN IF NOT EXISTS is_expiring BOOLEAN NOT NULL DEFAULT true,
+  ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;
+
+ALTER TABLE public.sidebar_ads
+  ADD COLUMN IF NOT EXISTS image_storage_path TEXT,
+  ADD COLUMN IF NOT EXISTS is_expiring BOOLEAN NOT NULL DEFAULT true,
+  ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;
+
 -- Preserve cleanup for images uploaded before image_storage_path was added.
 UPDATE public.articles
 SET image_storage_path = regexp_replace(
@@ -16,6 +26,16 @@ SET image_storage_path = regexp_replace(
 )
 WHERE image_storage_path IS NULL
   AND image_url LIKE '%/storage/v1/object/public/news-images/%';
+
+UPDATE public.breaking_news
+SET expires_at = created_at + INTERVAL '7 days'
+WHERE is_expiring = true
+  AND expires_at IS NULL;
+
+UPDATE public.sidebar_ads
+SET expires_at = created_at + INTERVAL '7 days'
+WHERE is_expiring = true
+  AND expires_at IS NULL;
 
 -- Existing articles receive the same seven-day lifetime. E-paper is maintained
 -- separately and must remain available until the administrator replaces it.
@@ -32,8 +52,22 @@ WHERE is_expiring = true
 ALTER TABLE public.articles
   ALTER COLUMN expires_at SET DEFAULT (timezone('utc'::text, now()) + INTERVAL '7 days');
 
+ALTER TABLE public.breaking_news
+  ALTER COLUMN expires_at SET DEFAULT (timezone('utc'::text, now()) + INTERVAL '7 days');
+
+ALTER TABLE public.sidebar_ads
+  ALTER COLUMN expires_at SET DEFAULT (timezone('utc'::text, now()) + INTERVAL '7 days');
+
 CREATE INDEX IF NOT EXISTS articles_expiry_index
   ON public.articles (expires_at)
+  WHERE is_expiring = true;
+
+CREATE INDEX IF NOT EXISTS breaking_news_expiry_index
+  ON public.breaking_news (expires_at)
+  WHERE is_expiring = true;
+
+CREATE INDEX IF NOT EXISTS sidebar_ads_expiry_index
+  ON public.sidebar_ads (expires_at)
   WHERE is_expiring = true;
 
 -- Delete a previous image when an editor replaces it, and delete the final
@@ -56,6 +90,23 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.remove_content_storage_image()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, storage
+AS $$
+BEGIN
+  IF OLD.image_storage_path IS NOT NULL THEN
+    DELETE FROM storage.objects
+    WHERE bucket_id = 'news-images'
+      AND name = OLD.image_storage_path;
+  END IF;
+
+  RETURN OLD;
+END;
+$$;
+
 DROP TRIGGER IF EXISTS articles_remove_replaced_image ON public.articles;
 CREATE TRIGGER articles_remove_replaced_image
 AFTER UPDATE OF image_storage_path ON public.articles
@@ -65,6 +116,16 @@ DROP TRIGGER IF EXISTS articles_remove_deleted_image ON public.articles;
 CREATE TRIGGER articles_remove_deleted_image
 AFTER DELETE ON public.articles
 FOR EACH ROW EXECUTE FUNCTION public.remove_article_storage_image();
+
+DROP TRIGGER IF EXISTS breaking_news_remove_deleted_image ON public.breaking_news;
+CREATE TRIGGER breaking_news_remove_deleted_image
+AFTER DELETE ON public.breaking_news
+FOR EACH ROW EXECUTE FUNCTION public.remove_content_storage_image();
+
+DROP TRIGGER IF EXISTS sidebar_ads_remove_deleted_image ON public.sidebar_ads;
+CREATE TRIGGER sidebar_ads_remove_deleted_image
+AFTER DELETE ON public.sidebar_ads
+FOR EACH ROW EXECUTE FUNCTION public.remove_content_storage_image();
 
 CREATE OR REPLACE FUNCTION public.purge_expired_articles()
 RETURNS void
@@ -79,12 +140,57 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.purge_expired_breaking_news()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  DELETE FROM public.breaking_news
+  WHERE is_expiring = true
+    AND expires_at <= timezone('utc'::text, now());
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.purge_expired_sidebar_ads()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  DELETE FROM public.sidebar_ads
+  WHERE is_expiring = true
+    AND expires_at <= timezone('utc'::text, now());
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.purge_expired_content()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  PERFORM public.purge_expired_articles();
+  PERFORM public.purge_expired_breaking_news();
+  PERFORM public.purge_expired_sidebar_ads();
+END;
+$$;
+
 -- Supabase enables pg_cron for scheduled database jobs. The job runs hourly;
--- website queries also hide an article as soon as its expiry time is reached.
+-- website queries also hide an item as soon as its expiry time is reached.
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 DO $$
 BEGIN
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'purge-expired-content-hourly') THEN
+    PERFORM cron.unschedule(jobid)
+    FROM cron.job
+    WHERE jobname = 'purge-expired-content-hourly';
+  END IF;
+
   IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'purge-expired-news-hourly') THEN
     PERFORM cron.unschedule(jobid)
     FROM cron.job
@@ -92,9 +198,9 @@ BEGIN
   END IF;
 
   PERFORM cron.schedule(
-    'purge-expired-news-hourly',
+    'purge-expired-content-hourly',
     '15 * * * *',
-    'SELECT public.purge_expired_articles();'
+    'SELECT public.purge_expired_content();'
   );
 END;
 $$;
