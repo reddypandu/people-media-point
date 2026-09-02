@@ -224,6 +224,7 @@ body {
   padding: 12px 14px;
   display: flex;
   align-items: center;
+  position: relative;
   gap: 4px;
   transition:
     background 0.2s,
@@ -256,6 +257,9 @@ body {
   position: absolute;
   top: 100%;
   left: 0;
+  max-width: calc(100vw - 20px); /* prevents it from ever overflowing screen */
+
+  /* right: 0; */
   background: #ffffff;
   min-width: 220px;
   list-style: none;
@@ -268,7 +272,11 @@ body {
   z-index: 1001;
   border-top: 3px solid var(--accent-red);
 }
-
+.nav-item:last-child .dropdown-menu,
+.nav-item.align-right .dropdown-menu {
+  left: auto;
+  right: 0;
+}
 .has-dropdown:hover .dropdown-menu,
 .dropdown-menu.show {
   opacity: 1;

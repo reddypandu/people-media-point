@@ -63,12 +63,13 @@ const Navbar = () => {
 
   const navItems = [
     { name: "LATEST NEWS", path: "/latest-news", type: "link" },
-    { name: "TELANGANA", type: "dropdown", data: TELANGANA_DISTRICTS },
-    {
-      name: "ANDHRA PRADESH",
-      type: "dropdown",
-      data: ANDHRA_PRADESH_DISTRICTS,
-    },
+    { name: "TELANGANA", path: "/telangana", type: "link" },
+    { name: "ANDHRA PRADESH", path: "/andhra-pradesh", type: "link" },
+    // {
+    //   name: "ANDHRA DISTRICTS",
+    //   type: "dropdown",
+    //   data: ANDHRA_PRADESH_DISTRICTS,
+    // },
     { name: "POLITICS", path: "/politics", type: "link" },
     { name: "MOVIE", path: "/movie", type: "link" },
     { name: "CRIME", path: "/crime", type: "link" },
@@ -77,7 +78,9 @@ const Navbar = () => {
     { name: "SPORTS", path: "/sports", type: "link" },
     { name: "BUSINESS", path: "/business", type: "link" },
     { name: "TECHNOLOGY", path: "/technology", type: "link" },
-    { name: "VIDEOS", path: "/videos", type: "link" },
+    // { name: "VIDEOS", path: "/videos", type: "link" },
+    { name: "DISTRICTS", type: "dropdown", data: TELANGANA_DISTRICTS },
+
     { name: "MORE", type: "dropdown", data: MORE_CATEGORIES },
   ];
 

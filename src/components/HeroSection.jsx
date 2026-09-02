@@ -111,14 +111,22 @@ const HeroSection = () => {
                     <TranslatedText>TOP STORY</TranslatedText>
                   </div>
 
-                  {/* <div className="slider-nav-arrows">
-                    <button className="slider-arrow prev" onClick={prevSlide} aria-label="Previous News">
+                  <div className="slider-nav-arrows">
+                    <button
+                      className="slider-arrow prev"
+                      onClick={prevSlide}
+                      aria-label="Previous News"
+                    >
                       <ChevronLeft size={20} />
                     </button>
-                    <button className="slider-arrow next" onClick={nextSlide} aria-label="Next News">
+                    <button
+                      className="slider-arrow next"
+                      onClick={nextSlide}
+                      aria-label="Next News"
+                    >
                       <ChevronRight size={20} />
                     </button>
-                  </div> */}
+                  </div>
                 </div>
 
                 <div className="slide-info-card">
