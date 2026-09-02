@@ -88,6 +88,8 @@ const CategoryPage = () => {
   };
 
   const isHome = !categoryId || categoryId === "home";
+  const featuredArticle = articles[0] || null;
+  const remainingArticles = articles.slice(1);
 
   // Home Page Sectional Categorization
   const telanganaArticles = articles.filter(
@@ -223,10 +225,6 @@ const CategoryPage = () => {
               </h1>
             </div>
 
-            <div className="category-ad-wrap">
-              <SidebarAd />
-            </div>
-
             {loading ? (
               <div className="loading-box" role="status" aria-live="polite">
                 <span className="loading-spinner" aria-hidden="true" />
@@ -235,11 +233,72 @@ const CategoryPage = () => {
                 </p>
               </div>
             ) : articles.length > 0 ? (
-              <div className="news-grid-4">
-                {articles.map((article) => (
-                  <Article key={article.id} originalArticle={article} />
-                ))}
-              </div>
+              <>
+                <div className="category-featured-layout">
+                  {featuredArticle && (
+                    <Link
+                      to={`/article/${featuredArticle.id}`}
+                      className="featured-story-card"
+                    >
+                      <div className="featured-story-image">
+                        <img
+                          src={
+                            featuredArticle.image_url ||
+                            "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80"
+                          }
+                          alt={featuredArticle.title}
+                        />
+                        <span className="featured-tag">
+                          <TranslatedText>
+                            {featuredArticle.categories?.name ||
+                              featuredArticle.category ||
+                              "News"}
+                          </TranslatedText>
+                        </span>
+                      </div>
+
+                      <div className="featured-story-content">
+                        <h2>
+                          <TranslatedText>
+                            {featuredArticle.title}
+                          </TranslatedText>
+                        </h2>
+                        <p>
+                          <TranslatedText>
+                            {featuredArticle.content?.substring(0, 180) + "..."}
+                          </TranslatedText>
+                        </p>
+                        <div className="featured-story-meta">
+                          <span>
+                            {new Date(
+                              featuredArticle.created_at || Date.now(),
+                            ).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                          <span className="read-more-link">
+                            <TranslatedText>Read Full Story</TranslatedText> →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  )}
+
+                  <div className="category-side-ad">
+                    <SidebarAd />
+                  </div>
+                </div>
+
+                {remainingArticles.length > 0 && (
+                  <div className="news-grid-4">
+                    {remainingArticles.map((article) => (
+                      <Article key={article.id} originalArticle={article} />
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="no-news-box">
                 <p>
@@ -342,11 +401,6 @@ const CategoryPage = () => {
           border: 1px solid #e2e8f0;
         }
 
-        .category-ad-wrap {
-          width: min(100%, 360px);
-          margin: 0 auto 1.5rem;
-        }
-
         .category-header-banner {
           padding-bottom: 1rem;
           margin-bottom: 1.8rem;
@@ -362,6 +416,99 @@ const CategoryPage = () => {
           gap: 12px;
           margin: 0;
           text-transform: uppercase;
+        }
+
+        .category-featured-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.75fr);
+          gap: 1.5rem;
+          align-items: stretch;
+          margin-bottom: 1.5rem;
+        }
+
+        .featured-story-card {
+          display: flex;
+          flex-direction: column;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          overflow: hidden;
+          color: inherit;
+          text-decoration: none;
+          box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .featured-story-image {
+          position: relative;
+          width: 100%;
+          height: 360px;
+          overflow: hidden;
+          background: #0a192f;
+        }
+
+        .featured-story-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .featured-tag {
+          position: absolute;
+          left: 14px;
+          bottom: 14px;
+          background: #d32f2f;
+          color: #fff;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.04em;
+          padding: 6px 10px;
+          border-radius: 4px;
+          text-transform: uppercase;
+        }
+
+        .featured-story-content {
+          padding: 1rem 1.1rem 1.1rem;
+        }
+
+        .featured-story-content h2 {
+          font-size: clamp(1.4rem, 2vw, 2.1rem);
+          line-height: 1.2;
+          color: #0a192f;
+          margin: 0 0 0.7rem;
+          font-weight: 800;
+        }
+
+        .featured-story-content p {
+          color: #475569;
+          line-height: 1.7;
+          margin: 0 0 1rem;
+        }
+
+        .featured-story-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 0.75rem;
+          color: #64748b;
+          font-size: 0.8rem;
+          border-top: 1px dashed #e2e8f0;
+          padding-top: 0.8rem;
+        }
+
+        .read-more-link {
+          color: #d32f2f;
+          font-weight: 700;
+        }
+
+        .category-side-ad {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 1rem;
         }
 
         .loading-box,
@@ -396,6 +543,15 @@ const CategoryPage = () => {
           .news-grid-4 {
             grid-template-columns: 1fr;
           }
+
+          .category-featured-layout {
+            grid-template-columns: 1fr;
+          }
+
+          .featured-story-image {
+            height: 260px;
+          }
+
           .section-title-bar h2 {
             font-size: 1.05rem;
           }
