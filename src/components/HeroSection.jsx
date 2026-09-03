@@ -287,8 +287,13 @@ const HeroSection = () => {
 
         .v6-hero-grid {
           display: grid;
-          grid-template-columns: 1.6fr 0.8fr;
+          grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr);
           gap: 1.5rem;
+        }
+
+        .hero-main-slider,
+        .hero-side-column {
+          min-width: 0;
         }
 
         .hero-main-slider {

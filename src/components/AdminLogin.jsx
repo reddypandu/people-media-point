@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { supabase } from '../supabase';
-import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Lock } from 'lucide-react';
-import TranslatedText from './TranslatedText';
+import React, { useState } from "react";
+import { supabase } from "../supabase";
+import { useNavigate } from "react-router-dom";
+import { ShieldCheck, Lock } from "lucide-react";
+import TranslatedText from "./TranslatedText";
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const DEFAULT_ADMIN_EMAIL = 'admin@peoplemediapoint.com';
-  const DEFAULT_ADMIN_PASS = 'Admin@123456';
+  const DEFAULT_ADMIN_EMAIL = "psrnewschannel@gmail.com";
+  const DEFAULT_ADMIN_PASS = "Admin@244001";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,28 +24,37 @@ const AdminLogin = () => {
 
     try {
       // 1. Check direct admin credentials
-      if (inputEmail === DEFAULT_ADMIN_EMAIL && inputPass === DEFAULT_ADMIN_PASS) {
-        localStorage.setItem('pmp_admin_logged_in', 'true');
-        localStorage.setItem('pmp_admin_email', DEFAULT_ADMIN_EMAIL);
-        navigate('/admin/dashboard');
+      if (
+        inputEmail === DEFAULT_ADMIN_EMAIL &&
+        inputPass === DEFAULT_ADMIN_PASS
+      ) {
+        localStorage.setItem("pmp_admin_logged_in", "true");
+        localStorage.setItem("pmp_admin_email", DEFAULT_ADMIN_EMAIL);
+        navigate("/admin/dashboard");
         return;
       }
 
       // 2. Try Supabase Auth
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: inputEmail,
-        password: inputPass,
-      });
+      const { data, error: authError } = await supabase.auth.signInWithPassword(
+        {
+          email: inputEmail,
+          password: inputPass,
+        },
+      );
 
       if (!authError && data?.session) {
-        localStorage.setItem('pmp_admin_logged_in', 'true');
-        localStorage.setItem('pmp_admin_email', inputEmail);
-        navigate('/admin/dashboard');
+        localStorage.setItem("pmp_admin_logged_in", "true");
+        localStorage.setItem("pmp_admin_email", inputEmail);
+        navigate("/admin/dashboard");
       } else {
-        setError('Invalid Admin Email or Password. Please check your credentials.');
+        setError(
+          "Invalid Admin Email or Password. Please check your credentials.",
+        );
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your internet connection.');
+      setError(
+        err.message || "Login failed. Please check your internet connection.",
+      );
     } finally {
       setLoading(false);
     }
@@ -67,35 +76,38 @@ const AdminLogin = () => {
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
             <label>Admin ID (Email)</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder="admin@peoplemediapoint.com"
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
           <div className="form-group">
             <label>Password</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               placeholder="••••••••"
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
           <button type="submit" disabled={loading} className="submit-btn">
             <Lock size={16} />
-            <span>{loading ? 'Authenticating...' : 'Login to Admin Dashboard'}</span>
+            <span>
+              {loading ? "Authenticating..." : "Login to Admin Dashboard"}
+            </span>
           </button>
         </form>
 
         <div className="login-footer">
           <p className="security-notice">
-            🔒 Restricted access for authorized People Media Point administrators only.
+            🔒 Restricted access for authorized People Media Point
+            administrators only.
           </p>
         </div>
       </div>
@@ -106,18 +118,18 @@ const AdminLogin = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #F1F5F9;
+          background: #f1f5f9;
           padding: 2.5rem 1rem;
         }
 
         .login-card {
           background: white;
           border-radius: 12px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
           width: 100%;
           max-width: 420px;
           padding: 2.5rem;
-          border-top: 5px solid #D32F2F;
+          border-top: 5px solid #d32f2f;
         }
 
         .login-header {
@@ -128,8 +140,8 @@ const AdminLogin = () => {
         .shield-icon {
           width: 58px;
           height: 58px;
-          background: #FEF2F2;
-          color: #D32F2F;
+          background: #fef2f2;
+          color: #d32f2f;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -138,13 +150,13 @@ const AdminLogin = () => {
         }
 
         .login-header h2 {
-          color: #0A192F;
+          color: #0a192f;
           font-size: 1.45rem;
           font-weight: 800;
         }
 
         .subtitle {
-          color: #64748B;
+          color: #64748b;
           font-size: 0.88rem;
           font-weight: 600;
           margin-top: 2px;
@@ -158,14 +170,14 @@ const AdminLogin = () => {
           display: block;
           font-size: 0.85rem;
           font-weight: 700;
-          color: #1E293B;
+          color: #1e293b;
           margin-bottom: 0.4rem;
         }
 
         input {
           width: 100%;
           padding: 0.8rem 0.95rem;
-          border: 1px solid #CBD5E1;
+          border: 1px solid #cbd5e1;
           border-radius: 6px;
           font-size: 0.95rem;
           outline: none;
@@ -173,13 +185,13 @@ const AdminLogin = () => {
         }
 
         input:focus {
-          border-color: #D32F2F;
+          border-color: #d32f2f;
         }
 
         .submit-btn {
           width: 100%;
           padding: 0.85rem;
-          background: #0A192F;
+          background: #0a192f;
           color: white;
           border: none;
           border-radius: 6px;
@@ -194,17 +206,17 @@ const AdminLogin = () => {
         }
 
         .submit-btn:hover {
-          background: #D32F2F;
+          background: #d32f2f;
         }
 
         .error-alert {
-          background: #FEF2F2;
-          color: #991B1B;
+          background: #fef2f2;
+          color: #991b1b;
           padding: 0.75rem;
           border-radius: 6px;
           font-size: 0.85rem;
           margin-bottom: 1.2rem;
-          border: 1px solid #FECACA;
+          border: 1px solid #fecaca;
           text-align: center;
           font-weight: 600;
         }
@@ -212,13 +224,13 @@ const AdminLogin = () => {
         .login-footer {
           margin-top: 1.8rem;
           padding-top: 1rem;
-          border-top: 1px solid #E2E8F0;
+          border-top: 1px solid #e2e8f0;
           text-align: center;
         }
 
         .security-notice {
           font-size: 0.78rem;
-          color: #64748B;
+          color: #64748b;
           line-height: 1.4;
         }
       `}</style>
