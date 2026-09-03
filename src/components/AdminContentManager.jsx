@@ -5,6 +5,7 @@ const emptyBreaking = { title: "", link_url: "", is_active: true };
 const emptyAd = {
   title: "",
   image_url: "",
+  image_storage_path: "",
   link_url: "",
   alt_text: "",
   display_order: 0,
@@ -18,6 +19,7 @@ const AdminContentManager = () => {
   const [adForm, setAdForm] = useState(emptyAd);
   const [editingBreakingId, setEditingBreakingId] = useState(null);
   const [editingAdId, setEditingAdId] = useState(null);
+  const [uploadingAdImage, setUploadingAdImage] = useState(false);
   const [message, setMessage] = useState("");
 
   const loadContent = async () => {
@@ -71,6 +73,9 @@ const AdminContentManager = () => {
 
   const saveAd = async (event) => {
     event.preventDefault();
+    if (!adForm.image_url.trim()) {
+      return notify("Add an image URL or upload a banner image first.");
+    }
     const payload = {
       ...adForm,
       display_order: Number(adForm.display_order) || 0,
@@ -94,8 +99,57 @@ const AdminContentManager = () => {
     loadContent();
   };
 
+  const handleAdImageUpload = async (file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      return notify("Please select an image file.");
+    }
+
+    setUploadingAdImage(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `sidebar-ads/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("news-images")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("news-images").getPublicUrl(filePath);
+      setAdForm((previous) => ({
+        ...previous,
+        image_url: publicUrl,
+        image_storage_path: filePath,
+      }));
+      notify("Banner image uploaded.");
+    } catch (error) {
+      notify(`Image upload failed: ${error.message}`);
+    } finally {
+      setUploadingAdImage(false);
+    }
+  };
+
+  const removeStoredAdImage = async (imagePath) => {
+    if (!imagePath) return;
+    const { error } = await supabase.storage
+      .from("news-images")
+      .remove([imagePath]);
+    if (error) console.warn("Ad image cleanup warning:", error.message);
+  };
+
   const removeItem = async (table, id) => {
     if (!window.confirm("Delete this item?")) return;
+    if (table === "sidebar_ads") {
+      const { data: ad } = await supabase
+        .from("sidebar_ads")
+        .select("image_storage_path")
+        .eq("id", id)
+        .maybeSingle();
+      await removeStoredAdImage(ad?.image_storage_path);
+    }
     const { error } = await supabase.from(table).delete().eq("id", id);
     notify(error ? `Could not delete: ${error.message}` : "Item deleted.");
     if (!error) loadContent();
@@ -208,14 +262,23 @@ const AdminContentManager = () => {
               onChange={(e) => setAdForm({ ...adForm, title: e.target.value })}
             />
             <input
-              required
               type="url"
-              placeholder="Banner image URL"
+              placeholder="Banner image URL (or upload below)"
               value={adForm.image_url}
               onChange={(e) =>
                 setAdForm({ ...adForm, image_url: e.target.value })
               }
             />
+            <label className="upload-field">
+              <span>Upload banner image to Supabase Storage</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleAdImageUpload(e.target.files[0])}
+                disabled={uploadingAdImage}
+              />
+              {uploadingAdImage && <small>Uploading image...</small>}
+            </label>
             <input
               type="url"
               placeholder="Click-through URL (optional)"
@@ -286,6 +349,7 @@ const AdminContentManager = () => {
                       setAdForm({
                         title: ad.title,
                         image_url: ad.image_url,
+                        image_storage_path: ad.image_storage_path || "",
                         link_url: ad.link_url || "",
                         alt_text: ad.alt_text || "",
                         display_order: ad.display_order,
