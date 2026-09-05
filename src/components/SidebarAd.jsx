@@ -57,7 +57,7 @@ const SidebarAd = () => {
           display: block;
           width: 100%;
           max-height: 280px;
-          object-fit: cover;
+          object-fit: contain;
           border-radius: 7px;
         }
       `}</style>

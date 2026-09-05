@@ -102,7 +102,7 @@ const BreakingTicker = () => {
         .ticker-track {
           display: inline-flex;
           align-items: center;
-          animation: marquee 35s linear infinite;
+          animation: marquee 70s linear infinite;
         }
         .ticker-track:hover {
           animation-play-state: paused;

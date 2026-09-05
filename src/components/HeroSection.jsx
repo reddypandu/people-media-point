@@ -152,11 +152,11 @@ const HeroSection = () => {
                   <h2 className="slide-title">
                     <TranslatedText>{currentArticle.title}</TranslatedText>
                   </h2>
-                  <p className="slide-excerpt">
+                  {/* <p className="slide-excerpt">
                     <TranslatedText>
                       {currentArticle.content?.substring(0, 130) + "..."}
                     </TranslatedText>
-                  </p>
+                  </p> */}
                 </div>
               </div>
             ) : null}

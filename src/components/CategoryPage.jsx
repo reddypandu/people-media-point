@@ -263,11 +263,11 @@ const CategoryPage = () => {
                             {featuredArticle.title}
                           </TranslatedText>
                         </h2>
-                        <p>
+                        {/* <p>
                           <TranslatedText>
                             {featuredArticle.content?.substring(0, 180) + "..."}
                           </TranslatedText>
-                        </p>
+                        </p> */}
                         <div className="featured-story-meta">
                           <span>
                             {new Date(
